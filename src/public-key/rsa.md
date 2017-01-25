@@ -75,5 +75,35 @@ OpenSSL rsautl參數
 * -decrypt: 使用private key解密
 * -sign: 使用private key簽章
 * -verify: 使用public key認證簽章
+
+使用RSA來進行加解密
 ```console
+產生一組private key和public key
+# openssl genrsa -out private.pem
+# openssl rsa -in private.pem -out public.pem -pubout
+# echo "hello world" > plain.txt
+
+使用public key進行加密
+方法1:
+# openssl rsautl -encrypt -inkey private.pem -in plain.txt -out encrypt.txt
+方法2:
+# openssl rsautl -encrypt -inkey public.pem -pubin -in plain.txt -out encrypt.txt
+
+使用private key進行解密
+# openssl rsautl -decrypt -inkey private.pem -in encrypt.txt -out decrypt.txt
+# diff plain.txt decrypt.txt
+#
+```
+使用RSA來進行簽章、認證
+```console
+使用private key來簽章
+# openssl rsautl -sign -inkey private.pem -in plain.txt -out sign.txt
+
+使用public key來認證簽章
+方法1:
+# openssl rsautl -verify -inkey public.pem -pubin -in sign.txt -out verify.txt
+方法2:
+# openssl rsautl -verify -inkey private.pem -in sign.txt -out verify.txt
+# diff plain.txt verify.txt
+#
 ```
